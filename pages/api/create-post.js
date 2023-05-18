@@ -16,42 +16,41 @@ post schema
 */
 
 export default async function handler(req, res) {
-  const { method } = req;
-  if (method !== "POST") {
-    return res.status(400).json({ message: "Invalid endpoint" });
-  }
+	const { method } = req;
+	if (method !== "POST") {
+		return res.status(400).json({ message: "Invalid endpoint" });
+	}
 
-  try {
-    // validate
-    const errorString = validate(req.body);
-    if (errorString) {
-      return res.status(400).json({ message: errorString });
-    }
+	try {
+		// validate
+		const errorString = validate(req.body);
+		if (errorString) {
+			return res.status(400).json({ message: errorString });
+		}
 
-    // create post
-    const newPost = createPost(req.body);
+		// create post
+		const newPost = createPost(req.body);
 
-    // load existing file
-    const existingData = await readFile(
-      path.join(process.cwd(), process.env.POSTS_FILE),
-      "utf-8"
-    );
-    const posts = JSON.parse(existingData);
+		// load existing file
+		const existingData = await readFile(
+			path.join(process.cwd(), process.env.POSTS_FILE),
+			"utf-8"
+		);
+		const posts = JSON.parse(existingData);
 
-    // modify posts object
-    posts[newPost.id] = newPost;
+		// modify posts object
+		posts[newPost.id] = newPost;
 
-    // write file
-    const postsString = JSON.stringify(posts);
-    await writeFile(
-      path.join(process.cwd(), process.env.POSTS_FILE),
-      postsString,
-      "utf-8"
-    );
-
-    return res.status(201).json({ message: "Post created", data: newPost });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
+		// write file
+		const postsString = JSON.stringify(posts);
+		await writeFile(
+			path.join(process.cwd(), process.env.POSTS_FILE),
+			postsString,
+			"utf-8"
+		);
+		return res.status(201).json({ message: "Post created", data: newPost });
+	} catch (e) {
+		console.error(e);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
 }
