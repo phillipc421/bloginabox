@@ -1,6 +1,6 @@
 import { readPosts, formatPosts } from "../../lib/readPosts";
 
-export default async function handler(req, res) {
+export const getPosts = async (req, res) => {
 	try {
 		const posts = await readPosts();
 		const postsList = formatPosts(posts);
@@ -9,4 +9,4 @@ export default async function handler(req, res) {
 		console.error(e);
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
-}
+};
